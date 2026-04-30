@@ -60,7 +60,9 @@ export default function LoginScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.flex}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      // ✅ 'height' funciona mejor en Android que undefined
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
       {/* Purple curved top area */}
       <View style={styles.topCurve}>
         <Image
@@ -72,7 +74,8 @@ export default function LoginScreen() {
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled">
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}>
         <Text style={styles.welcome}>Bienvenido</Text>
 
         <View style={styles.fieldWrap}>

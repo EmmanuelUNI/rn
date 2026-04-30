@@ -16,6 +16,28 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { COLORS } from '../config/api';
 
+// ✅ CRÍTICO: Field debe estar FUERA del componente RegisterScreen.
+// Si está adentro, React lo trata como un tipo nuevo en cada re-render,
+// desmonta el TextInput y cierra el teclado cada vez que escribes.
+function Field({ label, value, onChangeText, placeholder, secure, keyboardType, error }) {
+  return (
+    <View style={styles.fieldWrap}>
+      <Text style={styles.label}>{label}</Text>
+      <TextInput
+        style={[styles.input, error ? styles.inputError : null]}
+        placeholder={placeholder}
+        placeholderTextColor="#999"
+        secureTextEntry={secure}
+        keyboardType={keyboardType || 'default'}
+        autoCapitalize="none"
+        value={value}
+        onChangeText={onChangeText}
+      />
+      {!!error && <Text style={styles.errorText}>{error}</Text>}
+    </View>
+  );
+}
+
 export default function RegisterScreen() {
   const { signUp, setIsSigningUp } = useAuth();
   const [name, setName] = useState('');
@@ -68,27 +90,11 @@ export default function RegisterScreen() {
     }
   }
 
-  const Field = ({ label, value, onChangeText, placeholder, secure, keyboardType, error }) => (
-    <View style={styles.fieldWrap}>
-      <Text style={styles.label}>{label}</Text>
-      <TextInput
-        style={[styles.input, error ? styles.inputError : null]}
-        placeholder={placeholder}
-        placeholderTextColor="#999"
-        secureTextEntry={secure}
-        keyboardType={keyboardType || 'default'}
-        autoCapitalize="none"
-        value={value}
-        onChangeText={onChangeText}
-      />
-      {!!error && <Text style={styles.errorText}>{error}</Text>}
-    </View>
-  );
-
   return (
     <KeyboardAvoidingView
       style={styles.flex}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
       <View style={styles.topCurve}>
         <Image
           source={require('../../assets/logo_sin_fondo.png')}
@@ -99,7 +105,8 @@ export default function RegisterScreen() {
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled">
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Registro</Text>
 
         <Field
