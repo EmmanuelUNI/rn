@@ -35,7 +35,7 @@ export default function HomeScreen({ navigation }) {
       setLoading(true);
       const data = await CourseService.getCoursesByUser();
 
-      // Enrich with active activities count
+      
       const enriched = await Promise.all(
         data.map(async course => {
           const count = await CourseService.getActivitiesCountByCourse(course._id);

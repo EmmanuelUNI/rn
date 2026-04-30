@@ -16,7 +16,7 @@ import StudentGroupsScreen from '../screens/StudentGroupsScreen';
 import GradeGroupScreen from '../screens/GradeGroupScreen';
 import { COLORS } from '../config/api';
 
-// Placeholder screens for features not yet implemented
+
 function PlaceholderScreen({ route }) {
   const title = route?.name || 'Próximamente';
   return (

@@ -16,9 +16,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { COLORS } from '../config/api';
 
-// ✅ CRÍTICO: Field debe estar FUERA del componente RegisterScreen.
-// Si está adentro, React lo trata como un tipo nuevo en cada re-render,
-// desmonta el TextInput y cierra el teclado cada vez que escribes.
+
 function Field({ label, value, onChangeText, placeholder, secure, keyboardType, error }) {
   return (
     <View style={styles.fieldWrap}>
