@@ -29,8 +29,7 @@ export default function GradeGroupScreen() {
   const route      = useRoute<RoutePropType>();
   const { activity } = route.params;
 
-  // FIX: also destructure getMySubmittedGrades so we can load saved grades from
-  // the server when the user has already evaluated (matching Flutter's loadMyGrades).
+
   const {
     getMyGroupInActivity,
     hasEvaluated,
@@ -44,7 +43,7 @@ export default function GradeGroupScreen() {
   const [loading, setLoading]     = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [isEvalMode, setIsEvalMode] = useState(false);
-  // grades holds both: user's in-progress input AND server-loaded submitted grades.
+
   const [grades, setGrades]       = useState<EvaluationGrades>({});
   const [error, setError]         = useState('');
 
@@ -68,17 +67,15 @@ export default function GradeGroupScreen() {
           now > new Date(activity.start_date) && now < new Date(activity.end_date);
 
         if (!alreadyEval && isActive) {
-          // Evaluation window is open and user hasn't submitted yet → edit mode.
+
           setIsEvalMode(true);
         } else {
-          // FIX: user already evaluated (or window closed) → load saved grades from
-          // server so the static view shows real values instead of "–".
-          // Flutter calls loadMyGrades() exactly here in the EvaluationController.
+
           try {
             const submitted = await getMySubmittedGrades(activity._id, userId);
             setGrades(submitted);
           } catch {
-            // Non-fatal: grades will default to showing "–"
+            
           }
           setIsEvalMode(false);
         }
@@ -107,15 +104,11 @@ export default function GradeGroupScreen() {
 
       await submitEvaluation(activity._id, group._id, userId, grades);
 
-      // FIX: after a successful submit, fetch the persisted grades from the server
-      // so the static display reflects what was actually saved — matching Flutter's
-      // behaviour of assigning mySubmittedGrades from the submit payload and then
-      // switching to result mode.
       try {
         const submitted = await getMySubmittedGrades(activity._id, userId);
         setGrades(submitted);
       } catch {
-        // Fallback: keep local grades state (still better than all "–")
+        
       }
 
       setIsEvalMode(false);

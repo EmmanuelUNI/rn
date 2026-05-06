@@ -81,13 +81,13 @@ export default function ResultsScreen() {
         userId,
       );
 
-      // FIX (edge case): treat empty raw the same as Flutter — no data.
+
       if (!raw.length) {
         setHasData(false);
         return;
       }
 
-      // Aggregate all received scores into a single map for "Tu resultado".
+
       const globalByCriterion: Record<string, number[]> = {};
       for (const r of raw) {
         for (const [criterion, scores] of Object.entries(r.scoresByCriterion)) {
@@ -98,17 +98,14 @@ export default function ResultsScreen() {
 
       const myCard = buildCard('Tu resultado', globalByCriterion);
 
-      // FIX: filter out evaluator entries whose scoresByCriterion is empty before
-      // building public cards — Flutter skips them in its mapping loop.
+
       const publicCards: ResultCard[] = activity.is_public
         ? raw
             .filter(r => Object.keys(r.scoresByCriterion).length > 0)
             .map(r => buildCard(r.evaluatorName, r.scoresByCriterion))
         : [];
 
-      // FIX (edge case): mirror Flutter's condition for showing "no results":
-      // show the empty state when myCard has no criteria AND there are no public
-      // cards — matching: `(my == null || my["criteria"].isEmpty) && others.isEmpty`.
+
       if (myCard.criteria.length === 0 && publicCards.length === 0) {
         setHasData(false);
         return;
@@ -123,8 +120,7 @@ export default function ResultsScreen() {
     }
   }
 
-  // noResults: not loading, no error, and hasData is false (raw empty OR all
-  // criteria were empty — both cases are handled above before setHasData(true)).
+
   const noResults = !loading && !error && !hasData;
 
   return (

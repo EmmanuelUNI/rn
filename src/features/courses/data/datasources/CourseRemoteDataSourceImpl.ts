@@ -40,7 +40,7 @@ export class CourseRemoteDataSourceImpl implements CourseRemoteDataSource {
     if (res.status !== 201) throw new Error('Error al insertar datos');
   }
 
-  // ─── COURSES ────────────────────────────────────────────────────────────────
+
   async getCoursesByUser(userId: string, rol: string): Promise<Course[]> {
     if (rol === 'profesor') {
       return this.dbGet<Course>({ tableName: 'course', profesor_id: userId });
@@ -63,7 +63,7 @@ export class CourseRemoteDataSourceImpl implements CourseRemoteDataSource {
     await this.dbInsert('course', [course]);
   }
 
-  // ─── ACTIVITIES ─────────────────────────────────────────────────────────────
+
   async getActivitiesByCourse(courseId: string): Promise<Activity[]> {
     return this.dbGet<Activity>({ tableName: 'activity', course_id: courseId });
   }
@@ -72,7 +72,7 @@ export class CourseRemoteDataSourceImpl implements CourseRemoteDataSource {
     await this.dbInsert('activity', [{ _id: generateId(), ...activity }]);
   }
 
-  // ─── GROUPS ─────────────────────────────────────────────────────────────────
+
   async getGroupsByActivity(activityId: string): Promise<Group[]> {
     const actData = await this.dbGet<Activity>({ tableName: 'activity', _id: activityId });
     if (!actData.length) return [];
@@ -159,7 +159,7 @@ export class CourseRemoteDataSourceImpl implements CourseRemoteDataSource {
     return result;
   }
 
-  // ─── EVALUATIONS ────────────────────────────────────────────────────────────
+
   async hasEvaluated(activityId: string, evaluatorId: string): Promise<boolean> {
     const data = await this.dbGet<unknown>({
       tableName: 'evaluation',

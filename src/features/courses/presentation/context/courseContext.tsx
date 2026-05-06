@@ -16,25 +16,25 @@ import { Group, MyGroupSummary } from '../../domain/entities/Group';
 import { CourseRepository } from '../../domain/repositories/CourseRepository';
 
 export type CourseContextType = {
-  // State
+
   courses: (Course & { activities: number })[];
   isLoading: boolean;
   error: string | null;
   clearError: () => void;
 
-  // Courses
+
   refreshCourses: () => Promise<void>;
   createCourse: (name: string, nrc: string) => Promise<void>;
 
-  // Activities
+
   getActivitiesByCourse: (courseId: string) => Promise<Activity[]>;
 
-  // Groups
+
   getGroupsByActivity: (activityId: string) => Promise<Group[]>;
   getMyGroupInActivity: (activityId: string, userId: string) => Promise<Group | null>;
   getAllMyGroupsInCourse: (courseId: string, userId: string) => Promise<MyGroupSummary[]>;
 
-  // Evaluations
+
   hasEvaluated: (activityId: string, evaluatorId: string) => Promise<boolean>;
   submitEvaluation: (activityId: string, groupId: string, evaluatorId: string, grades: EvaluationGrades) => Promise<void>;
   getMySubmittedGrades: (activityId: string, evaluatorId: string) => Promise<EvaluationGrades>;

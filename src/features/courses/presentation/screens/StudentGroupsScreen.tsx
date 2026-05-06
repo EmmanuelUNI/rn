@@ -11,8 +11,7 @@ import type { RootStackParamList } from '@/src/AuthFlow';
 
 type RoutePropType = RouteProp<RootStackParamList, 'StudentGroups'>;
 
-// FIX: border only wraps cardBody, not the entire card (header + body).
-// Flutter borders only the body container, not the header.
+
 function GroupCard({
   title,
   groupName,
@@ -121,14 +120,14 @@ const styles = StyleSheet.create({
   emptyText:    { color: '#999', fontSize: 15 },
   errorText:    { color: '#e74c3c', fontSize: 15 },
 
-  // Card: no border here – border lives only on cardBody
+
   card: {
     borderRadius: 10,
     overflow: 'hidden',
     marginBottom: 16,
   },
 
-  // Header has its own background colour, no border
+
   cardHeader: {
     backgroundColor: COLORS.accentLight,
     paddingHorizontal: 10,
@@ -136,7 +135,7 @@ const styles = StyleSheet.create({
   },
   cardHeaderText: { color: '#FFFFFF', fontSize: 15, fontWeight: 'bold' },
 
-  // Body carries the border, matching Flutter behaviour
+
   cardBody: {
     flexDirection: 'row',
     backgroundColor: '#F8F8F8',
