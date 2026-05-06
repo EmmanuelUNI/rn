@@ -60,8 +60,8 @@ export default function ResultsScreen() {
   const prefs = LocalPreferencesAsyncStorage.getInstance();
 
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [cards, setCards] = useState<ResultCard[]>([]);
+  const [error, setError]     = useState('');
+  const [cards, setCards]     = useState<ResultCard[]>([]);
   const [hasData, setHasData] = useState(false);
 
   useEffect(() => {
@@ -81,33 +81,40 @@ export default function ResultsScreen() {
         userId,
       );
 
+      // FIX (edge case): treat empty raw the same as Flutter — no data.
       if (!raw.length) {
         setHasData(false);
         return;
       }
 
-      setHasData(true);
-
-
+      // Aggregate all received scores into a single map for "Tu resultado".
       const globalByCriterion: Record<string, number[]> = {};
       for (const r of raw) {
-        for (const [criterion, scores] of Object.entries(
-          r.scoresByCriterion,
-        )) {
-          if (!globalByCriterion[criterion]) {
-            globalByCriterion[criterion] = [];
-          }
+        for (const [criterion, scores] of Object.entries(r.scoresByCriterion)) {
+          if (!globalByCriterion[criterion]) globalByCriterion[criterion] = [];
           globalByCriterion[criterion].push(...scores);
         }
       }
 
       const myCard = buildCard('Tu resultado', globalByCriterion);
 
-
+      // FIX: filter out evaluator entries whose scoresByCriterion is empty before
+      // building public cards — Flutter skips them in its mapping loop.
       const publicCards: ResultCard[] = activity.is_public
-        ? raw.map((r) => buildCard(r.evaluatorName, r.scoresByCriterion))
+        ? raw
+            .filter(r => Object.keys(r.scoresByCriterion).length > 0)
+            .map(r => buildCard(r.evaluatorName, r.scoresByCriterion))
         : [];
 
+      // FIX (edge case): mirror Flutter's condition for showing "no results":
+      // show the empty state when myCard has no criteria AND there are no public
+      // cards — matching: `(my == null || my["criteria"].isEmpty) && others.isEmpty`.
+      if (myCard.criteria.length === 0 && publicCards.length === 0) {
+        setHasData(false);
+        return;
+      }
+
+      setHasData(true);
       setCards([myCard, ...publicCards]);
     } catch (e: any) {
       setError(e.message ?? 'Error al cargar resultados');
@@ -116,6 +123,8 @@ export default function ResultsScreen() {
     }
   }
 
+  // noResults: not loading, no error, and hasData is false (raw empty OR all
+  // criteria were empty — both cases are handled above before setHasData(true)).
   const noResults = !loading && !error && !hasData;
 
   return (
@@ -165,13 +174,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 28,
     padding: 18,
   },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  errorText: { color: '#e74c3c', fontSize: 14, textAlign: 'center' },
-  emptyText: {
-    color: '#7A7090',
-    fontSize: 14,
-    textAlign: 'center',
-    paddingHorizontal: 24,
-  },
+  center:      { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  errorText:   { color: '#e74c3c', fontSize: 14, textAlign: 'center' },
+  emptyText:   { color: '#7A7090', fontSize: 14, textAlign: 'center', paddingHorizontal: 24 },
   listContent: { paddingBottom: 20 },
 });

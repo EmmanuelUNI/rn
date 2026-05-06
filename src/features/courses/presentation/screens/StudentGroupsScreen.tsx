@@ -11,12 +11,25 @@ import type { RootStackParamList } from '@/src/AuthFlow';
 
 type RoutePropType = RouteProp<RootStackParamList, 'StudentGroups'>;
 
-function GroupCard({ title, groupName, membersCount }: { title: string; groupName: string; membersCount: number }) {
+// FIX: border only wraps cardBody, not the entire card (header + body).
+// Flutter borders only the body container, not the header.
+function GroupCard({
+  title,
+  groupName,
+  membersCount,
+}: {
+  title: string;
+  groupName: string;
+  membersCount: number;
+}) {
   return (
     <View style={styles.card}>
+      {/* Header – no border, matches Flutter's colored header container */}
       <View style={styles.cardHeader}>
         <Text style={styles.cardHeaderText}>{title}</Text>
       </View>
+
+      {/* Body – border here only, matching Flutter */}
       <View style={styles.cardBody}>
         <View style={styles.cardCol}>
           <Text style={styles.cardColText}>{groupName}</Text>
@@ -41,7 +54,9 @@ export default function StudentGroupsScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => { loadGroups(); }, []);
+  useEffect(() => {
+    loadGroups();
+  }, []);
 
   async function loadGroups() {
     try {
@@ -62,19 +77,29 @@ export default function StudentGroupsScreen() {
       <AppHeader title="Grupos" />
       <View style={styles.content}>
         {loading ? (
-          <View style={styles.center}><ActivityIndicator size="large" color={COLORS.primary} /></View>
+          <View style={styles.center}>
+            <ActivityIndicator size="large" color={COLORS.primary} />
+          </View>
         ) : error ? (
-          <View style={styles.center}><Text style={styles.errorText}>{error}</Text></View>
+          <View style={styles.center}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
         ) : (
           <FlatList
             data={groups}
             keyExtractor={(item, i) => `${item.groupName}-${i}`}
             renderItem={({ item }) => (
-              <GroupCard title={item.categoryName} groupName={item.groupName} membersCount={item.membersCount} />
+              <GroupCard
+                title={item.categoryName}
+                groupName={item.groupName}
+                membersCount={item.membersCount}
+              />
             )}
             contentContainerStyle={styles.listContent}
             ListEmptyComponent={
-              <View style={styles.center}><Text style={styles.emptyText}>No tienes grupos asignados</Text></View>
+              <View style={styles.center}>
+                <Text style={styles.emptyText}>No tienes grupos asignados</Text>
+              </View>
             }
           />
         )}
@@ -84,18 +109,45 @@ export default function StudentGroupsScreen() {
 }
 
 const styles = StyleSheet.create({
-  safeArea:          { flex: 1, backgroundColor: COLORS.primary },
-  content:           { flex: 1, backgroundColor: '#FFFFFF', borderTopLeftRadius: 30, borderTopRightRadius: 30 },
-  listContent:       { padding: 18 },
-  center:            { alignItems: 'center', justifyContent: 'center', marginTop: 40 },
-  emptyText:         { color: '#999', fontSize: 15 },
-  errorText:         { color: '#e74c3c', fontSize: 15 },
-  card:              { borderRadius: 10, overflow: 'hidden', marginBottom: 16, borderWidth: 1, borderColor: '#9B8CB9' },
-  cardHeader:        { backgroundColor: COLORS.accentLight, paddingHorizontal: 10, paddingVertical: 8 },
-  cardHeaderText:    { color: '#FFFFFF', fontSize: 15, fontWeight: 'bold' },
-  cardBody:          { flexDirection: 'row', backgroundColor: '#F8F8F8' },
-  cardCol:           { flex: 1, paddingHorizontal: 12, paddingVertical: 14 },
-  cardColText:       { color: COLORS.primary, fontSize: 12 },
-  cardColTextCenter: { color: COLORS.primary, fontSize: 12, textAlign: 'center' },
-  cardDivider:       { width: 1, backgroundColor: '#9B8CB9' },
+  safeArea: { flex: 1, backgroundColor: COLORS.primary },
+  content: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+  },
+  listContent:  { padding: 18 },
+  center:       { alignItems: 'center', justifyContent: 'center', marginTop: 40 },
+  emptyText:    { color: '#999', fontSize: 15 },
+  errorText:    { color: '#e74c3c', fontSize: 15 },
+
+  // Card: no border here – border lives only on cardBody
+  card: {
+    borderRadius: 10,
+    overflow: 'hidden',
+    marginBottom: 16,
+  },
+
+  // Header has its own background colour, no border
+  cardHeader: {
+    backgroundColor: COLORS.accentLight,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  cardHeaderText: { color: '#FFFFFF', fontSize: 15, fontWeight: 'bold' },
+
+  // Body carries the border, matching Flutter behaviour
+  cardBody: {
+    flexDirection: 'row',
+    backgroundColor: '#F8F8F8',
+    borderWidth: 1,
+    borderColor: '#9B8CB9',
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+
+  cardCol:            { flex: 1, paddingHorizontal: 12, paddingVertical: 14 },
+  cardColText:        { color: COLORS.primary, fontSize: 12 },
+  cardColTextCenter:  { color: COLORS.primary, fontSize: 12, textAlign: 'center' },
+  cardDivider:        { width: 1, backgroundColor: '#9B8CB9' },
 });
