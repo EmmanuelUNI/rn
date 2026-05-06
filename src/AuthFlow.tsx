@@ -11,6 +11,7 @@ import CreateCourseScreen from './features/courses/presentation/screens/CreateCo
 import GradeGroupScreen from './features/courses/presentation/screens/GradeGroupScreen';
 import HomeScreen from './features/courses/presentation/screens/HomeScreen';
 import StudentGroupsScreen from './features/courses/presentation/screens/StudentGroupsScreen';
+import ResultsScreen from './features/courses/presentation/screens/ResultsScreen';
 import PlaceholderScreen from './components/PlaceholderScreen';
 
 export type RootStackParamList = {
@@ -48,7 +49,7 @@ function AuthenticatedStack() {
         <Stack.Screen name="Groups" component={PlaceholderScreen} />
         <Stack.Screen name="GeneralResults" component={PlaceholderScreen} />
         <Stack.Screen name="CreateEvaluation" component={PlaceholderScreen} />
-        <Stack.Screen name="Results" component={PlaceholderScreen} />
+        <Stack.Screen name="Results" component={ResultsScreen} />
       </Stack.Navigator>
     </CourseProvider>
   );
