@@ -1,4 +1,22 @@
 {
-  "name": "rn",
-  "displayName": "rn"
+  "expo": {
+    "name": "RN Clean",
+    "slug": "rn-clean",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "rnclean",
+    "userInterfaceStyle": "automatic",
+    "ios": { "supportsTablet": true },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#4c3f6d"
+      }
+    },
+    "plugins": [
+      ["expo-splash-screen", {
+        "backgroundColor": "#4c3f6d",
+        "imageWidth": 200
+      }]
+    ]
+  }
 }
