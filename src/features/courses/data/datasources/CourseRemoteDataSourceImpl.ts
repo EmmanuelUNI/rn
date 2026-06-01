@@ -2,8 +2,9 @@ import { DB_URL } from '@/src/config/constants';
 import { LocalPreferencesAsyncStorage } from '@/src/core/LocalPreferencesAsyncStorage';
 import { AuthRemoteDataSourceImpl } from '@/src/features/auth/data/datasources/AuthRemoteDataSourceImpl';
 import { Activity, NewActivity } from '../../domain/entities/Activity';
+import { Category } from '../../domain/entities/Category';
 import { Course, NewCourse } from '../../domain/entities/Course';
-import { EvaluationGrades, EvaluationResult, StudentAverage } from '../../domain/entities/Evaluation';
+import { EvaluationGrades, EvaluationResult, StudentAverage, GroupActivityAverage, GroupAverage } from '../../domain/entities/Evaluation';
 import { Group, MyGroupSummary } from '../../domain/entities/Group';
 import { CourseRemoteDataSource } from './CourseRemoteDataSource';
 
@@ -70,6 +71,10 @@ export class CourseRemoteDataSourceImpl implements CourseRemoteDataSource {
 
   async createActivity(activity: NewActivity): Promise<void> {
     await this.dbInsert('activity', [{ _id: generateId(), ...activity }]);
+  }
+
+  async getCategoriesByCourse(courseId: string): Promise<Category[]> {
+    return this.dbGet<Category>({ tableName: 'category', course_id: courseId });
   }
 
 
@@ -289,6 +294,40 @@ export class CourseRemoteDataSourceImpl implements CourseRemoteDataSource {
       result.push({ studentId, studentName: userCache[studentId]?.name ?? 'Desconocido', average: avg });
     }
     result.sort((a, b) => b.average - a.average);
+    return result;
+  }
+
+  async getGroupsGlobalAverage(courseId: string): Promise<GroupActivityAverage[]> {
+    const activities = await this.dbGet<Activity>({ tableName: 'activity', course_id: courseId });
+    const result: GroupActivityAverage[] = [];
+
+    for (const activity of activities) {
+      const groups = await this.dbGet<{ _id: string; name: string }>(
+        { tableName: 'groups', category_id: activity.category_id },
+      );
+      const evaluations = await this.dbGet<{ _id: string; group_id: string }>(
+        { tableName: 'evaluation', activity_id: activity._id },
+      );
+
+      const groupAverages: GroupAverage[] = [];
+      for (const group of groups) {
+        const groupEvals = evaluations.filter(e => e.group_id === group._id);
+        const scores: number[] = [];
+
+        for (const ev of groupEvals) {
+          const evalScores = await this.dbGet<{ score: string }>(
+            { tableName: 'evaluation_scores', evaluation_id: ev._id },
+          );
+          for (const s of evalScores) scores.push(parseFloat(s.score));
+        }
+
+        const avg = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : null;
+        groupAverages.push({ groupId: group._id, groupName: group.name, average: avg });
+      }
+
+      result.push({ activityName: activity.name, groups: groupAverages });
+    }
+
     return result;
   }
 }

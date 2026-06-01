@@ -11,3 +11,14 @@ export type StudentAverage = {
   studentName: string;
   average: number;
 };
+
+export type GroupAverage = {
+  groupId: string;
+  groupName: string;
+  average: number | null;
+};
+
+export type GroupActivityAverage = {
+  activityName: string;
+  groups: GroupAverage[];
+};

@@ -1,6 +1,7 @@
 import { Activity, NewActivity } from '../entities/Activity';
+import { Category } from '../entities/Category';
 import { Course, NewCourse } from '../entities/Course';
-import { EvaluationGrades, EvaluationResult, StudentAverage } from '../entities/Evaluation';
+import { EvaluationGrades, EvaluationResult, StudentAverage, GroupActivityAverage } from '../entities/Evaluation';
 import { Group, MyGroupSummary } from '../entities/Group';
 
 export interface CourseRepository {
@@ -12,6 +13,7 @@ export interface CourseRepository {
 
   getActivitiesByCourse(courseId: string): Promise<Activity[]>;
   createActivity(activity: NewActivity): Promise<void>;
+  getCategoriesByCourse(courseId: string): Promise<Category[]>;
 
 
   getGroupsByActivity(activityId: string): Promise<Group[]>;
@@ -25,4 +27,5 @@ export interface CourseRepository {
   getEvaluationResults(activityId: string, userId: string): Promise<EvaluationResult[]>;
   getGlobalAverage(activityId: string): Promise<number>;
   getCourseGlobalAverages(courseId: string): Promise<StudentAverage[]>;
+  getGroupsGlobalAverage(courseId: string): Promise<GroupActivityAverage[]>;
 }

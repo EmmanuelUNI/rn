@@ -64,13 +64,21 @@ export class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   async logOut(): Promise<void> {
     const token = await this.prefs.retrieveData<string>('token');
-    try {
-      await fetch(`${AUTH_URL}/logout`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-      });
-    } catch {}
+    console.log('Logging out, clearing local storage...');
     await this.prefs.clearAll();
+    
+    try {
+      if (token) {
+        console.log('Notifying server about logout...');
+        await fetch(`${AUTH_URL}/logout`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+    } catch (e) {
+      console.warn('Error notify server about logout', e);
+    }
+    console.log('Logout complete.');
   }
 
   async verifyToken(): Promise<boolean> {

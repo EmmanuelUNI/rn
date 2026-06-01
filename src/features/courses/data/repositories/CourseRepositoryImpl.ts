@@ -1,6 +1,7 @@
 import { Activity, NewActivity } from '../../domain/entities/Activity';
+import { Category } from '../../domain/entities/Category';
 import { Course, NewCourse } from '../../domain/entities/Course';
-import { EvaluationGrades, EvaluationResult, StudentAverage } from '../../domain/entities/Evaluation';
+import { EvaluationGrades, EvaluationResult, StudentAverage, GroupActivityAverage } from '../../domain/entities/Evaluation';
 import { Group, MyGroupSummary } from '../../domain/entities/Group';
 import { CourseRepository } from '../../domain/repositories/CourseRepository';
 import { CourseRemoteDataSource } from '../datasources/CourseRemoteDataSource';
@@ -31,6 +32,9 @@ export class CourseRepositoryImpl implements CourseRepository {
   createActivity(activity: NewActivity): Promise<void> {
     return this.ds.createActivity(activity);
   }
+  getCategoriesByCourse(courseId: string): Promise<Category[]> {
+    return this.ds.getCategoriesByCourse(courseId);
+  }
   getGroupsByActivity(activityId: string): Promise<Group[]> {
     return this.ds.getGroupsByActivity(activityId);
   }
@@ -57,5 +61,8 @@ export class CourseRepositoryImpl implements CourseRepository {
   }
   getCourseGlobalAverages(courseId: string): Promise<StudentAverage[]> {
     return this.ds.getCourseGlobalAverages(courseId);
+  }
+  getGroupsGlobalAverage(courseId: string): Promise<GroupActivityAverage[]> {
+    return this.ds.getGroupsGlobalAverage(courseId);
   }
 }

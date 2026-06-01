@@ -41,6 +41,10 @@ export class LocalPreferencesAsyncStorage implements ILocalPreferences {
 
   async clearAll(): Promise<void> {
     try {
+      // Explicitly remove known session keys first
+      const keys = ['token', 'refreshToken', 'email', 'rol', 'name', 'userId'];
+      await AsyncStorage.multiRemove(keys);
+      // Then clear everything else
       await AsyncStorage.clear();
     } catch (e) {
       console.error('Error clearing storage', e);

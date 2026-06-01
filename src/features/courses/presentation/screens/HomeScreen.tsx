@@ -37,12 +37,17 @@ export default function HomeScreen() {
     refreshCourses().finally(() => setRefreshing(false));
   }
 
-  function handleLogout() {
-    Alert.alert('Cerrar sesión', '¿Deseas salir?', [
-      { text: 'Cancelar', style: 'cancel' },
-      { text: 'Salir', style: 'destructive', onPress: logout },
-    ]);
-  }
+  const handleLogout = async () => {
+    if (Platform.OS === 'web') {
+      const confirm = window.confirm('¿Deseas cerrar sesión?');
+      if (confirm) await logout();
+    } else {
+      Alert.alert('Cerrar sesión', '¿Deseas salir?', [
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Salir', style: 'destructive', onPress: async () => await logout() },
+      ]);
+    }
+  };
 
   const renderCourse = ({ item }: { item: Course & { activities: number } }) => (
     <TouchableOpacity

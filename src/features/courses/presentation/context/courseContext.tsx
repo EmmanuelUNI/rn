@@ -9,9 +9,10 @@ import React, {
 import { useDI } from '@/src/core/di/DIProvider';
 import { TOKENS } from '@/src/core/di/tokens';
 import { LocalPreferencesAsyncStorage } from '@/src/core/LocalPreferencesAsyncStorage';
-import { Activity } from '../../domain/entities/Activity';
+import { Activity, NewActivity } from '../../domain/entities/Activity';
+import { Category } from '../../domain/entities/Category';
 import { Course, NewCourse } from '../../domain/entities/Course';
-import { EvaluationGrades, EvaluationResult, StudentAverage } from '../../domain/entities/Evaluation';
+import { EvaluationGrades, EvaluationResult, StudentAverage, GroupActivityAverage } from '../../domain/entities/Evaluation';
 import { Group, MyGroupSummary } from '../../domain/entities/Group';
 import { CourseRepository } from '../../domain/repositories/CourseRepository';
 
@@ -28,6 +29,8 @@ export type CourseContextType = {
 
 
   getActivitiesByCourse: (courseId: string) => Promise<Activity[]>;
+  createActivity: (activity: NewActivity) => Promise<void>;
+  getCategoriesByCourse: (courseId: string) => Promise<Category[]>;
 
 
   getGroupsByActivity: (activityId: string) => Promise<Group[]>;
@@ -40,6 +43,7 @@ export type CourseContextType = {
   getMySubmittedGrades: (activityId: string, evaluatorId: string) => Promise<EvaluationGrades>;
   getEvaluationResults: (activityId: string, userId: string) => Promise<EvaluationResult[]>;
   getCourseGlobalAverages: (courseId: string) => Promise<StudentAverage[]>;
+  getGroupsGlobalAverage: (courseId: string) => Promise<GroupActivityAverage[]>;
 };
 
 export const CourseContext = createContext<CourseContextType | undefined>(undefined);
@@ -88,6 +92,14 @@ export function CourseProvider({ children }: { children: ReactNode }) {
     return repo.getActivitiesByCourse(courseId);
   }
 
+  async function createActivity(activity: NewActivity): Promise<void> {
+    return repo.createActivity(activity);
+  }
+
+  async function getCategoriesByCourse(courseId: string): Promise<Category[]> {
+    return repo.getCategoriesByCourse(courseId);
+  }
+
   async function getGroupsByActivity(activityId: string): Promise<Group[]> {
     return repo.getGroupsByActivity(activityId);
   }
@@ -120,14 +132,18 @@ export function CourseProvider({ children }: { children: ReactNode }) {
     return repo.getCourseGlobalAverages(courseId);
   }
 
+  async function getGroupsGlobalAverage(courseId: string): Promise<GroupActivityAverage[]> {
+    return repo.getGroupsGlobalAverage(courseId);
+  }
+
   return (
     <CourseContext.Provider value={{
       courses, isLoading, error, clearError,
       refreshCourses, createCourse,
-      getActivitiesByCourse,
+      getActivitiesByCourse, createActivity, getCategoriesByCourse,
       getGroupsByActivity, getMyGroupInActivity, getAllMyGroupsInCourse,
       hasEvaluated, submitEvaluation, getMySubmittedGrades,
-      getEvaluationResults, getCourseGlobalAverages,
+      getEvaluationResults, getCourseGlobalAverages, getGroupsGlobalAverage,
     }}>
       {children}
     </CourseContext.Provider>

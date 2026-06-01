@@ -8,7 +8,10 @@ import VerificationScreen from './features/auth/presentation/screens/Verificatio
 import { CourseProvider } from './features/courses/presentation/context/courseContext';
 import CourseScreen from './features/courses/presentation/screens/CourseScreen';
 import CreateCourseScreen from './features/courses/presentation/screens/CreateCourseScreen';
+import CreateEvaluationScreen from './features/courses/presentation/screens/CreateEvaluationScreen';
+import GeneralResultsScreen from './features/courses/presentation/screens/GeneralResultsScreen';
 import GradeGroupScreen from './features/courses/presentation/screens/GradeGroupScreen';
+import GroupsScreen from './features/courses/presentation/screens/GroupsScreen';
 import HomeScreen from './features/courses/presentation/screens/HomeScreen';
 import StudentGroupsScreen from './features/courses/presentation/screens/StudentGroupsScreen';
 import ResultsScreen from './features/courses/presentation/screens/ResultsScreen';
@@ -46,9 +49,9 @@ function AuthenticatedStack() {
         <Stack.Screen name="CreateCourse" component={CreateCourseScreen} />
         <Stack.Screen name="StudentGroups" component={StudentGroupsScreen} />
         <Stack.Screen name="GradeGroup" component={GradeGroupScreen} />
-        <Stack.Screen name="Groups" component={PlaceholderScreen} />
-        <Stack.Screen name="GeneralResults" component={PlaceholderScreen} />
-        <Stack.Screen name="CreateEvaluation" component={PlaceholderScreen} />
+        <Stack.Screen name="Groups" component={GroupsScreen} />
+        <Stack.Screen name="GeneralResults" component={GeneralResultsScreen} />
+        <Stack.Screen name="CreateEvaluation" component={CreateEvaluationScreen} />
         <Stack.Screen name="Results" component={ResultsScreen} />
       </Stack.Navigator>
     </CourseProvider>
