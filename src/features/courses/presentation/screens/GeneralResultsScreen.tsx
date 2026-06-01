@@ -69,25 +69,29 @@ export default function GeneralResultsScreen() {
   );
 
   const renderGroupActivity = ({ item }: { item: GroupActivityAverage }) => (
-    <List.Accordion
-      title={item.activityName}
-      titleStyle={styles.accordionTitle}
-      style={styles.accordion}
-      left={props => <List.Icon {...props} icon="folder-outline" color={COLORS.primary} />}
-    >
-      {item.groups.map((g) => (
-        <List.Item
-          key={g.groupId}
-          title={g.groupName}
-          right={() => (
-            <Text style={styles.groupAvg}>
-              {g.average !== null ? g.average.toFixed(1) : '--'}
-            </Text>
-          )}
-          style={styles.listItem}
-        />
-      ))}
-    </List.Accordion>
+    <View style={styles.accordionContainer}>
+      <List.Accordion
+        title={item.activityName}
+        titleStyle={styles.accordionTitle}
+        style={styles.accordion}
+        left={props => <List.Icon {...props} icon="folder-outline" color={COLORS.primary} />}
+        theme={{ colors: { background: 'transparent' } }}
+      >
+        {item.groups.map((g) => (
+          <List.Item
+            key={g.groupId}
+            title={g.groupName}
+            titleStyle={styles.listItemTitle}
+            right={() => (
+              <Text style={styles.groupAvg}>
+                {g.average !== null ? g.average.toFixed(1) : '--'}
+              </Text>
+            )}
+            style={styles.listItem}
+          />
+        ))}
+      </List.Accordion>
+    </View>
   );
 
   return (
@@ -183,19 +187,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   averageText: { color: '#FFFFFF', fontWeight: 'bold' },
-  accordion: {
+  accordionContainer: {
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    marginBottom: 8,
-    elevation: 2,
+    marginBottom: 12,
+    // Elevation for Android
+    elevation: 3,
+    // Shadow for iOS
     shadowColor: COLORS.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
+    overflow: 'hidden', // Ensures shadow doesn't create strange borders
   },
-  accordionTitle: { color: COLORS.primary, fontWeight: 'bold' },
-  listItem: { paddingLeft: 20 },
-  groupAvg: { alignSelf: 'center', marginRight: 15, fontWeight: 'bold', color: '#666' },
+  accordion: {
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 4,
+  },
+  accordionTitle: { color: COLORS.primary, fontWeight: 'bold', fontSize: 15 },
+  listItem: { paddingLeft: 12, backgroundColor: '#FFFFFF' },
+  listItemTitle: { fontSize: 14, color: '#444' },
+  groupAvg: { alignSelf: 'center', marginRight: 15, fontWeight: 'bold', color: '#666', fontSize: 14 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 50 },
   emptyText: { color: '#999', fontSize: 16 },
 });
