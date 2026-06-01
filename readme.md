@@ -27,3 +27,8 @@ Crea un archivo `.env` en la raíz:
 ```
 EXPO_PUBLIC_ROBLE_PROJECT_ID=tu_project_id
 ```
+
+## Material adicional
+
+- Demostración de la app en React Native (modo profesor) y Flutter (modo estudiante):
+  https://youtu.be/12AnMqg-0hA
